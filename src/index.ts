@@ -1,28 +1,24 @@
 import { loadPendoAgent } from './pendoStub'
 
-// globalThis.navigator?.serviceWorker?.register(require('./serviceWorker'))
-
 loadPendoAgent(
-  "sha256-nUoO330kQ1XlmPrDlASmM7FNAHKBncX0LZRbwnYL/V4=",
+  'sha256-nUoO330kQ1XlmPrDlASmM7FNAHKBncX0LZRbwnYL/V4=',
   {
-    environmentName: 'production',
+    // This is -- except for preventCodeInjection -- recapitulation of settings
+    // already provided with the agent, but these are the security-critical bits.
+    // Some of these options aren't even respected by the agent unless they're
+    // embedded in its code, but this is the list parsePendoAgent() needs to
+    // validate if we ever end up using it, so it needs to be plumbed through to
+    // loadPendoAgent() as-is.
     blockAgentMetadata: false, // double-check
     blockLogRemoteAddress: true,
     dataHost: 'data.pendo.io',
-    // stagingServers: [/^.*\.web-29e\.pages\.dev$/, 'localhost:3000'],
-    stagingAgentUrl:
-      'https://pendo-io-static.storage.googleapis.com/agent/static/67c2f326-a6c2-4aa2-4559-08a53b679e93/pendo-staging.js',
     allowedOriginServers: ['https://pendo-static-6047664892149760.storage.googleapis.com'],
     allowCrossOriginFrames: false,
     disableCookies: true,
-    disableFeedbackAutoInit: false, // double-check
     disableGlobalCSS: true,
-    disablePersistence: true,
     excludeAllText: true,
     guideValidation: true,
     localStorageOnly: true,
-    preferBroadcastChannel: true,
-    preferMutationObserver: true,
     preventCodeInjection: true,
     requireHTTPS: true,
     restrictP1Access: true,
@@ -30,40 +26,39 @@ loadPendoAgent(
     xhrWhitelist: null,
     htmlAttributeBlacklist: null,
     htmlAttributes: /^(tabindex)$/i,
-    apiKey: '67c2f326-a6c2-4aa2-4559-08a53b679e93',
-    // hack to stop SameSite cookie warnings while disableCookies is set
-    cookieDomain: window.location.hostname
-  }, {
-    // visitor: {
-    //   id: 'test_visitor'
-    // },
-    sanitizeUrl: (x) => {
-      console.debug('PendoConfig:sanitizeUrl', x)
+    apiKey: '67c2f326-a6c2-4aa2-4559-08a53b679e93'
+  },
+  {
+    visitor: {
+      id: 'test_visitor'
+    },
+    sanitizeUrl: (x: string) => {
+      console.debug('PendoConfig: sanitizeUrl', x)
       return x
     },
     events: {
       ready: () => {
-        console.debug('PendoConfig:ready')
+        console.debug('PendoConfig: ready')
       },
       deliverablesLoaded: () => {
-        console.debug('PendoConfig:deliverablesLoaded')
+        console.debug('PendoConfig: deliverablesLoaded')
       },
       guidesFailed: () => {
-        console.debug('PendoConfig:guidesFailed')
+        console.debug('PendoConfig: guidesFailed')
       },
       guidesLoaded: () => {
-        console.debug('PendoConfig:guidesLoaded')
+        console.debug('PendoConfig: guidesLoaded')
       },
-      validateGuide: async (signatureString) => {
-        console.debug('PendoConfig:validateGuide', signatureString)
+      validateGuide: async (signatureString: string) => {
+        console.debug('PendoConfig: validateGuide', signatureString)
         return true
       },
-      validateLauncher: async (signatureString) => {
-        console.debug('PendoConfig:validateLauncher', signatureString)
+      validateLauncher: async (signatureString: string) => {
+        console.debug('PendoConfig: validateLauncher', signatureString)
         return true
       },
-      validateGlobalScript: async (data) => {
-        console.debug('PendoConfig:validateGlobalScript', data)
+      validateGlobalScript: async (data: unknown) => {
+        console.debug('PendoConfig: validateGlobalScript', data)
         return true
       }
     }
